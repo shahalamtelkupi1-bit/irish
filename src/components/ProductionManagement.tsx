@@ -128,6 +128,9 @@ export default function ProductionManagement({ token, preSelectedBatchId, onBack
         </span>
         <input
           type="text"
+          autoComplete="off"
+          data-lpignore="true"
+          name="search_input"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by Batch Number, Buyer, Ref, or Color..."

@@ -244,6 +244,9 @@ export default function PublicSearch({ onAdminClick }: PublicSearchProps) {
             </div>
             <input
               type="text"
+              autoComplete="off"
+              data-lpignore="true"
+              name="search_batch"
               placeholder="Enter Buyer, Batch, Ref"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}

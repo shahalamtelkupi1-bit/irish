@@ -394,6 +394,9 @@ export default function BatchList({ token, onEditBatch, onNavigate, onViewProduc
             <input
               type="text"
               placeholder="Search by Batch No, Buyer, Ref..."
+              autoComplete="off"
+              data-lpignore="true"
+              name="search_input"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-white focus:outline-none focus:border-indigo-500 text-sm transition"

@@ -127,6 +127,9 @@ export default function TrimsPending({ token, onNavigate }: TrimsPendingProps) {
           <input
             type="text"
             placeholder="Search trims, batch or buyer..."
+            autoComplete="off"
+            data-lpignore="true"
+            name="search_input"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-4 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-200"

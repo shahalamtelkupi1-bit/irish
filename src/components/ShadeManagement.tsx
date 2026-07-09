@@ -217,6 +217,9 @@ export default function ShadeManagement({ token, preFilter, onBack }: ShadeManag
         </span>
         <input
           type="text"
+          autoComplete="off"
+          data-lpignore="true"
+          name="search_input"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by Batch Number, Buyer, Ref, or Color..."
