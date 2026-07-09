@@ -217,7 +217,7 @@ export default function ShadeManagement({ token, preFilter, onBack }: ShadeManag
         </span>
         <input
           type="text"
-          autoComplete="off"
+          autoComplete="one-time-code"
           data-lpignore="true"
           name="search_input"
           value={searchQuery}

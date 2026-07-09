@@ -128,7 +128,7 @@ export default function ProductionManagement({ token, preSelectedBatchId, onBack
         </span>
         <input
           type="text"
-          autoComplete="off"
+          autoComplete="one-time-code"
           data-lpignore="true"
           name="search_input"
           value={searchQuery}

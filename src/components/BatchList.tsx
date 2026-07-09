@@ -394,7 +394,7 @@ export default function BatchList({ token, onEditBatch, onNavigate, onViewProduc
             <input
               type="text"
               placeholder="Search by Batch No, Buyer, Ref..."
-              autoComplete="off"
+              autoComplete="one-time-code"
               data-lpignore="true"
               name="search_input"
               value={search}
