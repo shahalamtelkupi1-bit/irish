@@ -1,0 +1,6 @@
+{
+  "name": "Iris Fabrics Production Tracker",
+  "description": "A high-fidelity mobile-first textile dyeing production tracking system for Iris Fabrics Ltd. Tracks wet, dry, finishing, shade, quality, RFD, and delivery stages with OCR capabilities and detailed reporting.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
