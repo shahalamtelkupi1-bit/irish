@@ -234,7 +234,8 @@ export default function PublicSearch({ onAdminClick }: PublicSearchProps) {
         
         {/* Global Search Bar */}
         <div className="no-print relative mb-12 max-w-2xl mx-auto">
-          <form autoComplete="one-time-code" onSubmit={(e) => e.preventDefault()} className="relative group shadow-2xl rounded-2xl">
+          <form autoComplete="off" onSubmit={(e) => e.preventDefault()} className="relative group shadow-2xl rounded-2xl">
+            <input type="text" name="dummy" style={{display: "none"}} aria-hidden="true" autoComplete="off" />
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               {loading ? (
                 <Loader2 className="w-5 h-5 text-indigo-400 animate-spin" />
@@ -244,9 +245,9 @@ export default function PublicSearch({ onAdminClick }: PublicSearchProps) {
             </div>
             <input
               type="text"
-              autoComplete="one-time-code"
+              autoComplete="off"
               data-lpignore="true"
-              name="search_batch"
+              name="q"
               placeholder="Enter Buyer, Batch, Ref"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}

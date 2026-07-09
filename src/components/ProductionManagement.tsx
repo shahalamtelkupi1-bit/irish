@@ -122,13 +122,14 @@ export default function ProductionManagement({ token, preSelectedBatchId, onBack
     <div className="space-y-6">
       
       {/* Search Input */}
-      <div className="relative no-print">
+      <form autoComplete="off" onSubmit={(e) => e.preventDefault()} className="relative no-print">
+        <input type="text" name="dummy" autoComplete="off" style={{display: "none"}} aria-hidden="true" />
         <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
           <Search className="h-4.5 w-4.5 text-slate-400" />
         </span>
         <input
           type="text"
-          autoComplete="one-time-code"
+          autoComplete="off"
           data-lpignore="true"
           name="search_input"
           value={searchQuery}
@@ -144,7 +145,7 @@ export default function ProductionManagement({ token, preSelectedBatchId, onBack
             Clear
           </button>
         )}
-      </div>
+      </form>
 
       {/* Main Production Accordion */}
       {loading ? (
