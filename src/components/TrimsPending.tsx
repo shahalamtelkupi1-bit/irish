@@ -122,20 +122,19 @@ export default function TrimsPending({ token, onNavigate }: TrimsPendingProps) {
         </div>
 
         {/* Search Bar */}
-        <form autoComplete="off" onSubmit={(e) => e.preventDefault()} className="relative w-full sm:w-64">
-          <input type="text" name="dummy" autoComplete="off" style={{display: "none"}} aria-hidden="true" />
+        <div className="relative w-full sm:w-64">
           <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
           <input
             type="text"
-            placeholder="Search trims, batch or buyer..."
             autoComplete="off"
-            data-lpignore="true"
-            name="search_input"
+            autoCorrect="off"
+            spellCheck={false}
+            placeholder="Search trims, batch or buyer..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-4 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-200"
           />
-        </form>
+        </div>
       </div>
 
       {/* Trims Grid List */}

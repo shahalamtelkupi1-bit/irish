@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import "dotenv/config";
 import express from "express";
 import path from "path";
 import fs from "fs";
@@ -11,51 +10,20 @@ import crypto from "crypto";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import { DatabaseSchema, Batch, BatchStage, StageKey, StageStatus, OCRResult } from "./src/types";
-import { initializeApp } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
 
-// Initialize Firebase Admin (skip if config file is missing or renamed)
+// Initialize Firebase Admin with config - REMOVED for local file database support
 let firestoreDb: any = null;
-const firebaseConfigPath = path.join(process.cwd(), "firebase-applet-config.json");
-if (fs.existsSync(firebaseConfigPath)) {
-  try {
-    let projectId = undefined;
-    let databaseId = "ai-studio-irisfabricsprodu-9d27c892-c01b-4f61-b4d6-ffd229dde53a";
-    const config = JSON.parse(fs.readFileSync(firebaseConfigPath, "utf-8"));
-    if (config.projectId) {
-      projectId = config.projectId;
-    }
-    if (config.firestoreDatabaseId) {
-      databaseId = config.firestoreDatabaseId;
-    }
-    const firebaseApp = initializeApp(projectId ? { projectId } : undefined);
-    firestoreDb = getFirestore(firebaseApp, databaseId);
-    console.log(`Firebase initialized successfully with project: ${projectId}, database: ${databaseId}`);
-  } catch (err) {
-    console.error("Failed to initialize Firebase Admin:", err);
-  }
-} else {
-  console.log("firebase-applet-config.json not found. Firebase disabled, using local file database.");
-}
 
 function safeFirestoreWrite(collection: string, docId: string, data: any) {
-  if (firestoreDb) {
-    firestoreDb.collection(collection).doc(docId).set(data).catch((err: any) => {
-      console.error(`Error writing to Firestore collection ${collection} / doc ${docId}:`, err);
-    });
-  }
+  // Local file storage is the sole source of truth. Firestore syncing is removed.
 }
 
 function safeFirestoreDelete(collection: string, docId: string) {
-  if (firestoreDb) {
-    firestoreDb.collection(collection).doc(docId).delete().catch((err: any) => {
-      console.error(`Error deleting from Firestore collection ${collection} / doc ${docId}:`, err);
-    });
-  }
+  // Local file storage is the sole source of truth. Firestore syncing is removed.
 }
 
 const app = express();
-const PORT = parseInt(process.env.PORT || "3000", 10);
+const PORT = 3000;
 
 // Body parser
 app.use(express.json({ limit: "50mb" }));
@@ -268,94 +236,10 @@ let dbState: DatabaseSchema = {
   rework_logs: [],
 };
 
-async function seedFirestore() {
-  if (!firestoreDb) return;
-  const now = new Date().toISOString();
-  
-  // Default Admin config doc
-  await firestoreDb.collection("admin").doc("config").set({
-    username: "shah",
-    password_hash: hashPassword("Shahalam*1951"),
-    created_at: now,
-  });
-
-  // Fabric types
-  const fabricTypes = [
-    { id: 1, name: "S/J", badge_color: "primary", created_at: now },
-    { id: 2, name: "LY S/J", badge_color: "success", created_at: now },
-    { id: 3, name: "PK", badge_color: "info", created_at: now },
-    { id: 4, name: "Terry", badge_color: "warning", created_at: now },
-    { id: 5, name: "Fleece", badge_color: "secondary", created_at: now },
-  ];
-  for (const ft of fabricTypes) {
-    await firestoreDb.collection("fabric_types").doc(ft.id.toString()).set(ft);
-  }
-
-  // Seed standard batches & stages
-  const initialDb: DatabaseSchema = {
-    admin: { username: "shah", password_hash: hashPassword("Shahalam*1951"), created_at: now },
-    fabric_types: fabricTypes,
-    batches: [],
-    batch_stages: [],
-    rework_logs: [],
-  };
-  const seeded = seedDefaultBatches(initialDb);
-
-  for (const b of seeded.batches) {
-    await firestoreDb.collection("batches").doc(b.id.toString()).set(b);
-  }
-  for (const s of seeded.batch_stages) {
-    await firestoreDb.collection("batch_stages").doc(s.id.toString()).set(s);
-  }
-}
-
 async function initFirestoreDatabase() {
-  if (!firestoreDb) {
-    console.log("Firebase is not initialized, falling back to local file database.");
-    dbState = initDatabase();
-    return;
-  }
-
-  try {
-    console.log("Initializing Firestore Database...");
-    const adminDoc = await firestoreDb.collection("admin").doc("config").get();
-    if (!adminDoc.exists) {
-      console.log("Firestore is empty, seeding initial data...");
-      await seedFirestore();
-    }
-
-    const adminData = (await firestoreDb.collection("admin").doc("config").get()).data();
-    const fabricSnapshot = await firestoreDb.collection("fabric_types").get();
-    const batchSnapshot = await firestoreDb.collection("batches").get();
-    const stageSnapshot = await firestoreDb.collection("batch_stages").get();
-    const reworkSnapshot = await firestoreDb.collection("rework_logs").get();
-
-    dbState = {
-      admin: adminData ? {
-        username: adminData.username || "shah",
-        password_hash: adminData.password_hash || hashPassword("Shahalam*1951"),
-        created_at: adminData.created_at || new Date().toISOString(),
-      } : {
-        username: "shah",
-        password_hash: hashPassword("Shahalam*1951"),
-        created_at: new Date().toISOString(),
-      },
-      fabric_types: fabricSnapshot.docs.map((doc: any) => doc.data() as any),
-      batches: batchSnapshot.docs.map((doc: any) => doc.data() as Batch),
-      batch_stages: stageSnapshot.docs.map((doc: any) => doc.data() as BatchStage),
-      rework_logs: reworkSnapshot.docs.map((doc: any) => doc.data() as any),
-    };
-
-    dbState.fabric_types.sort((a, b) => a.id - b.id);
-    dbState.batches.sort((a, b) => a.id - b.id);
-    dbState.batch_stages.sort((a, b) => a.id - b.id);
-    dbState.rework_logs.sort((a, b) => a.id - b.id);
-
-    console.log(`Firestore loaded: ${dbState.batches.length} batches, ${dbState.batch_stages.length} stages, ${dbState.rework_logs.length} rework logs.`);
-  } catch (err) {
-    console.error("Failed to load from Firestore, falling back to local file database:", err);
-    dbState = initDatabase();
-  }
+  console.log("Initializing local file-based database...");
+  dbState = initDatabase();
+  console.log(`Local file database loaded: ${dbState.batches.length} batches, ${dbState.batch_stages.length} stages, ${dbState.rework_logs.length} rework logs.`);
 }
 
 // Atomic Save Helper
@@ -373,6 +257,11 @@ function getGeminiClient() {
     }
     aiClient = new GoogleGenAI({
       apiKey,
+      httpOptions: {
+        headers: {
+          "User-Agent": "aistudio-build",
+        },
+      },
     });
   }
   return aiClient;
@@ -1451,31 +1340,12 @@ app.get("/api/dashboard/stats", (req, res) => {
 async function startServer() {
   await initFirestoreDatabase();
 
-  const isDev = process.env.NODE_ENV !== "production";
-
-  if (isDev) {
-    // Try Vite middleware, fall back to static serving of dist
-    try {
-      const vite = await createViteServer({
-        server: { middlewareMode: true },
-        appType: "spa",
-      });
-      app.use(vite.middlewares);
-    } catch (err) {
-      console.warn("Vite middleware failed, serving dist/ static files instead:", (err as Error).message);
-      const distPath = path.join(process.cwd(), "dist");
-      if (fs.existsSync(distPath)) {
-        app.use(express.static(distPath));
-        app.get("*", (req, res) => {
-          res.sendFile(path.join(distPath, "index.html"));
-        });
-      } else {
-        console.warn("dist/ folder not found. Run 'npm run build' first, or serve with 'npm run dev' when in the project directory.");
-        app.get("*", (req, res) => {
-          res.send("Server running. Run 'npm run build' to build the frontend.");
-        });
-      }
-    }
+  if (process.env.NODE_ENV !== "production") {
+    const vite = await createViteServer({
+      server: { middlewareMode: true },
+      appType: "spa",
+    });
+    app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));

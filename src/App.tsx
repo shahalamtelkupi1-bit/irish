@@ -253,6 +253,9 @@ export default function App() {
               <input
                 type="text"
                 required
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
                 placeholder="Enter admin username"
                 value={loginUsername}
                 onChange={(e) => setLoginUsername(e.target.value)}
@@ -268,6 +271,9 @@ export default function App() {
               <input
                 type="password"
                 required
+                autoComplete="new-password"
+                autoCorrect="off"
+                spellCheck={false}
                 placeholder="Enter password"
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}

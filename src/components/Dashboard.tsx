@@ -6,7 +6,7 @@
 import React, { useState, useEffect } from "react";
 import { 
   Database, RefreshCw, Layers, Truck, Calendar, ClipboardCheck, 
-  AlertTriangle, RotateCcw, Compass, Loader2
+  AlertTriangle, RotateCcw, Compass, PlusCircle, Upload, FileText, Edit, Loader2
 } from "lucide-react";
 import { AdminPanel } from "./Navbar";
 import { useOfflineSync } from "../hooks/useOfflineSync";
@@ -178,6 +178,48 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
   return (
     <div className="space-y-8 animate-fade-in">
       
+      {/* Quick Actions Panel */}
+      <section className="glass-card p-6">
+        <h4 className="text-xs font-mono uppercase text-slate-400 tracking-wider mb-4">Quick Operations</h4>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <button
+            onClick={() => onNavigate("add")}
+            className="flex flex-col items-center justify-center p-4 rounded-xl glass-button-secondary hover:border-blue-400/40 hover:bg-white/5 transition group text-center cursor-pointer"
+          >
+            <PlusCircle className="w-6 h-6 text-indigo-400 mb-2 group-hover:scale-105 transition" />
+            <span className="text-sm font-semibold text-white">Add New Batch</span>
+            <span className="text-[10px] text-slate-400 mt-0.5">Register single batch</span>
+          </button>
+
+          <button
+            onClick={() => onNavigate("import")}
+            className="flex flex-col items-center justify-center p-4 rounded-xl glass-button-secondary hover:border-emerald-400/40 hover:bg-white/5 transition group text-center cursor-pointer"
+          >
+            <Upload className="w-6 h-6 text-emerald-400 mb-2 group-hover:scale-105 transition" />
+            <span className="text-sm font-semibold text-white">Import Excel/CSV</span>
+            <span className="text-[10px] text-slate-400 mt-0.5">Bulk batch upload</span>
+          </button>
+
+          <button
+            onClick={() => onNavigate("batches")}
+            className="flex flex-col items-center justify-center p-4 rounded-xl glass-button-secondary hover:border-amber-400/40 hover:bg-white/5 transition group text-center cursor-pointer"
+          >
+            <Edit className="w-6 h-6 text-amber-400 mb-2 group-hover:scale-105 transition" />
+            <span className="text-sm font-semibold text-white">Edit Batches</span>
+            <span className="text-[10px] text-slate-400 mt-0.5">Update profiles & remove</span>
+          </button>
+
+          <button
+            onClick={() => onNavigate("reports")}
+            className="flex flex-col items-center justify-center p-4 rounded-xl glass-button-secondary hover:border-purple-400/40 hover:bg-white/5 transition group text-center cursor-pointer"
+          >
+            <FileText className="w-6 h-6 text-purple-400 mb-2 group-hover:scale-105 transition" />
+            <span className="text-sm font-semibold text-white">View Reports</span>
+            <span className="text-[10px] text-slate-400 mt-0.5">Production analytics</span>
+          </button>
+        </div>
+      </section>
+
       {/* 11-Stats Grid Card */}
       <section className="space-y-4">
         <h4 className="text-xs font-mono uppercase text-slate-400 tracking-wider">Production Status</h4>

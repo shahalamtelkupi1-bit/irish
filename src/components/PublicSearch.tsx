@@ -234,8 +234,7 @@ export default function PublicSearch({ onAdminClick }: PublicSearchProps) {
         
         {/* Global Search Bar */}
         <div className="no-print relative mb-12 max-w-2xl mx-auto">
-          <form autoComplete="off" onSubmit={(e) => e.preventDefault()} className="relative group shadow-2xl rounded-2xl">
-            <input type="text" name="dummy" style={{display: "none"}} aria-hidden="true" autoComplete="off" />
+          <div className="relative group shadow-2xl rounded-2xl">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               {loading ? (
                 <Loader2 className="w-5 h-5 text-indigo-400 animate-spin" />
@@ -246,14 +245,14 @@ export default function PublicSearch({ onAdminClick }: PublicSearchProps) {
             <input
               type="text"
               autoComplete="off"
-              data-lpignore="true"
-              name="q"
+              autoCorrect="off"
+              spellCheck={false}
               placeholder="Enter Buyer, Batch, Ref"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-11 pr-4 py-4 rounded-2xl glass-input placeholder-slate-500 font-sans focus:outline-none shadow-inner"
             />
-          </form>
+          </div>
 
           {/* Instant Dropdown Results */}
           {showResultsDropdown && searchResults.length > 0 && (
@@ -443,167 +442,153 @@ export default function PublicSearch({ onAdminClick }: PublicSearchProps) {
             </div>
 
             {/* Quality, Shade, Delivery and Process Loss specifications */}
-            <div className="p-6 md:p-8 bg-white/2">
-              {selectedBatch.trims && selectedBatch.trims.trim() !== "" && selectedBatch.trims.trim().toLowerCase() !== "n/a" && selectedBatch.trims.trim().toLowerCase() !== "none" ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {/* Left Column: Complete Fabric & Production Specifications */}
-                  <div className="space-y-6">
-                    {/* Delivery details panel (replaces old shade/quality panels) */}
-                    <div className="glass-panel p-6 rounded-2xl border border-white/5 shadow-xl bg-white/[0.02]">
-                      <h4 className="text-sm font-display font-bold text-slate-200 uppercase tracking-wider mb-4 pb-3 border-b border-white/10 flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-emerald-400" />
-                        <span>Delivery to</span>
-                      </h4>
-                      {selectedBatch.delivery_date ? (
-                        <div className="space-y-4">
-                          <div className="flex justify-between items-center py-1 border-b border-white/5">
-                            <span className="text-xs text-slate-400 font-mono">Delivery Date</span>
-                            <span className="text-sm font-bold text-indigo-300 font-mono">{formatDate(selectedBatch.delivery_date)}</span>
+            <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 bg-white/2">
+              {/* Left Column: Complete Fabric & Production Specifications */}
+              <div className="space-y-6">
+                {/* Delivery details panel (replaces old shade/quality panels) */}
+                <div className="glass-panel p-6 rounded-2xl border border-white/5 shadow-xl bg-white/[0.02]">
+                  <h4 className="text-sm font-display font-bold text-slate-200 uppercase tracking-wider mb-4 pb-3 border-b border-white/10 flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-emerald-400" />
+                    <span>Delivery to</span>
+                  </h4>
+                  {selectedBatch.delivery_date ? (
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center py-1 border-b border-white/5">
+                        <span className="text-xs text-slate-400 font-mono">Delivery Date</span>
+                        <span className="text-sm font-bold text-indigo-300 font-mono">{formatDate(selectedBatch.delivery_date)}</span>
+                      </div>
+                      <div className="flex justify-between items-center py-1 border-b border-white/5">
+                        <span className="text-xs text-slate-400 font-mono">Delivery Qty</span>
+                        <span className="text-sm font-bold text-emerald-400 font-mono bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-md">
+                          {selectedBatch.delivery_qty === "N/A" ? "N/A" : `${selectedBatch.delivery_qty} KG`}
+                        </span>
+                      </div>
+                      {selectedBatch.delivery_remarks && (
+                        <div className="pt-2">
+                          <span className="text-xs text-slate-400 font-mono block mb-1">Remarks</span>
+                          <div className="text-xs text-slate-300 italic bg-slate-950/30 p-3 rounded-xl border border-white/10">
+                            "{selectedBatch.delivery_remarks}"
                           </div>
-                          <div className="flex justify-between items-center py-1 border-b border-white/5">
-                            <span className="text-xs text-slate-400 font-mono">Delivery Qty</span>
-                            <span className="text-sm font-bold text-emerald-400 font-mono bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-md">
-                              {selectedBatch.delivery_qty === "N/A" ? "N/A" : `${selectedBatch.delivery_qty} KG`}
-                            </span>
-                          </div>
-                          {selectedBatch.delivery_remarks && (
-                            <div className="pt-2">
-                              <span className="text-xs text-slate-400 font-mono block mb-1">Remarks</span>
-                              <div className="text-xs text-slate-300 italic bg-slate-950/30 p-3 rounded-xl border border-white/10">
-                                "{selectedBatch.delivery_remarks}"
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="py-6 text-center text-slate-500 text-sm italic">
-                          Batch not yet dispatched or delivery not scheduled.
                         </div>
                       )}
                     </div>
-                  </div>
+                  ) : (
+                    <div className="py-6 text-center text-slate-500 text-sm italic">
+                      Batch not yet dispatched or delivery not scheduled.
+                    </div>
+                  )}
+                </div>
+              </div>
 
-                  {/* Right Column: Trims Breakdown & Advanced Process Loss Calculations */}
-                  <div className="space-y-6">
-                    <div className="glass-panel p-6 rounded-2xl border border-white/5 shadow-xl bg-white/[0.02]">
-                      <h4 className="text-sm font-display font-bold text-slate-200 uppercase tracking-wider mb-5 pb-3 border-b border-white/10 flex items-center gap-2">
-                        <Info className="w-4 h-4 text-amber-400" />
-                        <span>Trims Process Loss Analytics</span>
-                      </h4>
+              {/* Right Column: Trims Breakdown & Advanced Process Loss Calculations */}
+              <div className="space-y-6">
+                <div className="glass-panel p-6 rounded-2xl border border-white/5 shadow-xl bg-white/[0.02]">
+                  <h4 className="text-sm font-display font-bold text-slate-200 uppercase tracking-wider mb-5 pb-3 border-b border-white/10 flex items-center gap-2">
+                    <Info className="w-4 h-4 text-amber-400" />
+                    <span>Trims Process Loss Analytics</span>
+                  </h4>
 
-                      {selectedBatch.stages?.delivered === "completed" ? (
-                        <>
-                          {/* Summary Metric card */}
-                          <div className="bg-gradient-to-br from-indigo-500/10 to-indigo-600/5 border border-indigo-500/15 p-5 rounded-2xl mb-6 shadow-inner">
-                            <div className="text-[11px] text-indigo-300 uppercase font-mono tracking-wider">Overall Trims Process Loss</div>
-                            <div className="mt-1 flex items-baseline gap-2">
-                              <div className="text-3xl font-display font-black text-white">
-                                {calcLossParts(selectedBatch.trims_quantity, selectedBatch.delivery_qty, selectedBatch.trims).text.split(" (")[0]}
-                              </div>
-                              <div className="text-xs text-slate-400 font-mono">
-                                (Calculated from Trims Qty)
-                              </div>
-                            </div>
-                            <div className="mt-2 text-xs text-slate-400 flex flex-wrap gap-x-4 gap-y-1 font-mono pt-2 border-t border-white/5">
-                              <div>Input Trims: <strong className="text-slate-200">{selectedBatch.trims_quantity || "N/A"}</strong></div>
-                              <div>Delivered: <strong className="text-emerald-400">{selectedBatch.delivery_qty || "N/A"}</strong></div>
-                            </div>
+                  {selectedBatch.stages?.delivered === "completed" ? (
+                    <>
+                      {/* Summary Metric card */}
+                      <div className="bg-gradient-to-br from-indigo-500/10 to-indigo-600/5 border border-indigo-500/15 p-5 rounded-2xl mb-6 shadow-inner">
+                        <div className="text-[11px] text-indigo-300 uppercase font-mono tracking-wider">Overall Trims Process Loss</div>
+                        <div className="mt-1 flex items-baseline gap-2">
+                          <div className="text-3xl font-display font-black text-white">
+                            {calcLossParts(selectedBatch.trims_quantity, selectedBatch.delivery_qty, selectedBatch.trims).text.split(" (")[0]}
                           </div>
+                          <div className="text-xs text-slate-400 font-mono">
+                            (Calculated from Trims Qty)
+                          </div>
+                        </div>
+                        <div className="mt-2 text-xs text-slate-400 flex flex-wrap gap-x-4 gap-y-1 font-mono pt-2 border-t border-white/5">
+                          <div>Input Trims: <strong className="text-slate-200">{selectedBatch.trims_quantity || "N/A"}</strong></div>
+                          <div>Delivered: <strong className="text-emerald-400">{selectedBatch.delivery_qty || "N/A"}</strong></div>
+                        </div>
+                      </div>
 
-                          {/* Itemized Trims Breakdown List */}
-                          <div>
-                            <h5 className="text-xs text-slate-300 uppercase font-mono tracking-wider mb-3">Itemized Breakdown & Formula Details</h5>
-                            
-                            {(() => {
-                              const trimsNames = selectedBatch.trims ? selectedBatch.trims.split("+").map(s => s.trim()) : [];
-                              const trimsQtys = selectedBatch.trims_quantity ? selectedBatch.trims_quantity.split("+").map(s => s.trim()) : [];
-                              const deliveryQtys = selectedBatch.delivery_qty ? selectedBatch.delivery_qty.split("+").map(s => s.trim()) : [];
+                      {/* Itemized Trims Breakdown List */}
+                      <div>
+                        <h5 className="text-xs text-slate-300 uppercase font-mono tracking-wider mb-3">Itemized Breakdown & Formula Details</h5>
+                        
+                        {(() => {
+                          const trimsNames = selectedBatch.trims ? selectedBatch.trims.split("+").map(s => s.trim()) : [];
+                          const trimsQtys = selectedBatch.trims_quantity ? selectedBatch.trims_quantity.split("+").map(s => s.trim()) : [];
+                          const deliveryQtys = selectedBatch.delivery_qty ? selectedBatch.delivery_qty.split("+").map(s => s.trim()) : [];
 
-                              const maxParts = Math.max(trimsNames.length, trimsQtys.length);
-                              
-                              if (maxParts === 0) {
+                          const maxParts = Math.max(trimsNames.length, trimsQtys.length);
+                          
+                          if (maxParts === 0) {
+                            return (
+                              <div className="text-center py-4 text-xs text-slate-500 bg-white/5 rounded-xl border border-white/5">
+                                No Trims specifications found for this batch.
+                              </div>
+                            );
+                          }
+
+                          return (
+                            <div className="space-y-3">
+                              {Array.from({ length: maxParts }).map((_, i) => {
+                                const name = trimsNames[i] || `Trim Item ${i + 1}`;
+                                const inputQtyStr = trimsQtys[i] || "0";
+                                const inputQty = parseFloat(inputQtyStr) || 0;
+                                const delQtyStr = deliveryQtys[i] || "0";
+                                const delQty = parseFloat(delQtyStr) || 0;
+
+                                const lossQty = Math.max(0, inputQty - delQty);
+                                const lossPct = inputQty > 0 ? (lossQty / inputQty) * 100 : 0;
+
                                 return (
-                                  <div className="text-center py-4 text-xs text-slate-500 bg-white/5 rounded-xl border border-white/5">
-                                    No Trims specifications found for this batch.
-                                  </div>
-                                );
-                              }
-
-                              return (
-                                <div className="space-y-3">
-                                  {Array.from({ length: maxParts }).map((_, i) => {
-                                    const name = trimsNames[i] || `Trim Item ${i + 1}`;
-                                    const inputQtyStr = trimsQtys[i] || "0";
-                                    const inputQty = parseFloat(inputQtyStr) || 0;
-                                    const delQtyStr = deliveryQtys[i] || "0";
-                                    const delQty = parseFloat(delQtyStr) || 0;
-
-                                    const lossQty = Math.max(0, inputQty - delQty);
-                                    const lossPct = inputQty > 0 ? (lossQty / inputQty) * 100 : 0;
-
-                                    return (
-                                      <div key={i} className="p-4 bg-white/[0.03] hover:bg-white/[0.05] transition rounded-xl border border-white/5">
-                                        <div className="flex justify-between items-start mb-2">
-                                          <div>
-                                            <div className="text-xs font-bold text-white font-sans">{name}</div>
-                                            <div className="text-[10px] text-slate-400 font-mono mt-0.5">
-                                              Formula: <span className="text-amber-400">{inputQty}</span> - <span className="text-emerald-400">{delQty}</span> = <span className="text-rose-400">{lossQty.toFixed(1)} loss</span>
-                                            </div>
-                                          </div>
-                                          <div className="text-right">
-                                            <div className="text-sm font-black font-mono text-rose-400">{lossPct.toFixed(1)}%</div>
-                                            <div className="text-[9px] text-slate-500 uppercase tracking-wider font-mono">Process Loss</div>
-                                          </div>
-                                        </div>
-
-                                        {/* Modern Progress Bar comparing Input vs Delivered */}
-                                        <div className="mt-2.5">
-                                          <div className="flex justify-between text-[9px] text-slate-500 font-mono mb-1">
-                                            <span>Delivered: {delQty}</span>
-                                            <span>Input: {inputQty}</span>
-                                          </div>
-                                          <div className="w-full h-2 bg-slate-950 rounded-full overflow-hidden flex">
-                                            <div 
-                                              className="bg-emerald-500 h-full rounded-l-full transition-all" 
-                                              style={{ width: `${inputQty > 0 ? Math.min(100, (delQty / inputQty) * 100) : 0}%` }} 
-                                            />
-                                            <div 
-                                              className="bg-rose-500/80 h-full rounded-r-full transition-all" 
-                                              style={{ width: `${inputQty > 0 ? Math.min(100, (lossQty / inputQty) * 100) : 0}%` }} 
-                                            />
-                                          </div>
+                                  <div key={i} className="p-4 bg-white/[0.03] hover:bg-white/[0.05] transition rounded-xl border border-white/5">
+                                    <div className="flex justify-between items-start mb-2">
+                                      <div>
+                                        <div className="text-xs font-bold text-white font-sans">{name}</div>
+                                        <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+                                          Formula: <span className="text-amber-400">{inputQty}</span> - <span className="text-emerald-400">{delQty}</span> = <span className="text-rose-400">{lossQty.toFixed(1)} loss</span>
                                         </div>
                                       </div>
-                                    );
-                                  })}
-                                </div>
-                              );
-                            })()}
-                          </div>
-                        </>
-                      ) : (
-                        <div className="py-12 text-center bg-slate-950/20 border border-white/5 rounded-2xl flex flex-col items-center justify-center gap-3">
-                          <Clock className="w-10 h-10 text-amber-500 animate-pulse" />
-                          <span className="text-sm font-bold text-slate-300 font-mono">Delivery Pending</span>
-                          <p className="text-[11px] text-slate-500 px-6 leading-relaxed max-w-sm">
-                            Process loss calculations and formulas will be available once the batch delivery is completed.
-                          </p>
-                        </div>
-                      )}
+                                      <div className="text-right">
+                                        <div className="text-sm font-black font-mono text-rose-400">{lossPct.toFixed(1)}%</div>
+                                        <div className="text-[9px] text-slate-500 uppercase tracking-wider font-mono">Process Loss</div>
+                                      </div>
+                                    </div>
+
+                                    {/* Modern Progress Bar comparing Input vs Delivered */}
+                                    <div className="mt-2.5">
+                                      <div className="flex justify-between text-[9px] text-slate-500 font-mono mb-1">
+                                        <span>Delivered: {delQty}</span>
+                                        <span>Input: {inputQty}</span>
+                                      </div>
+                                      <div className="w-full h-2 bg-slate-950 rounded-full overflow-hidden flex">
+                                        <div 
+                                          className="bg-emerald-500 h-full rounded-l-full transition-all" 
+                                          style={{ width: `${inputQty > 0 ? Math.min(100, (delQty / inputQty) * 100) : 0}%` }} 
+                                        />
+                                        <div 
+                                          className="bg-rose-500/80 h-full rounded-r-full transition-all" 
+                                          style={{ width: `${inputQty > 0 ? Math.min(100, (lossQty / inputQty) * 100) : 0}%` }} 
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="py-12 text-center bg-slate-950/20 border border-white/5 rounded-2xl flex flex-col items-center justify-center gap-3">
+                      <Clock className="w-10 h-10 text-amber-500 animate-pulse" />
+                      <span className="text-sm font-bold text-slate-300 font-mono">Delivery Pending</span>
+                      <p className="text-[11px] text-slate-500 px-6 leading-relaxed max-w-sm">
+                        Process loss calculations and formulas will be available once the batch delivery is completed.
+                      </p>
                     </div>
-                  </div>
+                  )}
                 </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center py-20 px-6">
-                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-slate-700/40 to-slate-800/20 border border-slate-600/30 flex items-center justify-center mb-6 shadow-2xl">
-                    <span className="text-4xl font-black font-display text-slate-400">~</span>
-                  </div>
-                  <h3 className="text-2xl font-display font-bold text-slate-300 mb-3">No Trims</h3>
-                  <p className="text-sm text-slate-500 max-w-md text-center leading-relaxed">
-                    This batch does not have any trims specifications. Process loss analytics are only available for batches with trims data.
-                  </p>
-                </div>
-              )}
+              </div>
             </div>
 
             {/* Remarks Footer Tag Panel */}
@@ -686,13 +671,6 @@ export default function PublicSearch({ onAdminClick }: PublicSearchProps) {
           <ArrowUp className="w-5 h-5 text-indigo-300 group-hover:text-indigo-200" />
         </button>
       )}
-
-      {/* Footer */}
-      <footer className="no-print relative z-10 text-center py-6 border-t border-white/5 mt-12">
-        <p className="text-xs text-slate-500 font-mono">
-          Developed by <span className="text-slate-300 font-semibold">Md Shah Alam</span>
-        </p>
-      </footer>
     </div>
   );
 }

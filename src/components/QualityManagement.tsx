@@ -205,16 +205,15 @@ export default function QualityManagement({ token, preFilter, onBack }: QualityM
       </section>
 
       {/* Search Input */}
-      <form autoComplete="off" onSubmit={(e) => e.preventDefault()} className="relative no-print">
-        <input type="text" name="dummy" autoComplete="off" style={{display: "none"}} aria-hidden="true" />
+      <div className="relative no-print">
         <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
           <Search className="h-4.5 w-4.5 text-slate-400" />
         </span>
         <input
           type="text"
           autoComplete="off"
-          data-lpignore="true"
-          name="search_input"
+          autoCorrect="off"
+          spellCheck={false}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by Batch Number, Buyer, Ref, or Color..."
@@ -228,7 +227,7 @@ export default function QualityManagement({ token, preFilter, onBack }: QualityM
             Clear
           </button>
         )}
-      </form>
+      </div>
 
       {/* Batches assessment list */}
       {loading ? (
@@ -469,12 +468,14 @@ export default function QualityManagement({ token, preFilter, onBack }: QualityM
                           <AlertTriangle className="w-4 h-4" />
                           <span>Defective Quality Diagnostics</span>
                         </div>
-
                         {/* Custom explanation */}
                         <div className="space-y-1">
                           <label className="text-xs text-slate-500 font-semibold block">Custom Defect Notes</label>
                           <input
                             type="text"
+                            autoComplete="off"
+                            autoCorrect="off"
+                            spellCheck={false}
                             placeholder="Type additional specific quality defects..."
                             value={state.custom_reason}
                             onChange={(e) => updateState(batch.id, "custom_reason", e.target.value)}
@@ -501,6 +502,9 @@ export default function QualityManagement({ token, preFilter, onBack }: QualityM
 
                             <input
                               type="text"
+                              autoComplete="off"
+                              autoCorrect="off"
+                              spellCheck={false}
                               placeholder="Rework remarks (optional)..."
                               value={state.reworkRemarks}
                               onChange={(e) => updateState(batch.id, "reworkRemarks", e.target.value)}

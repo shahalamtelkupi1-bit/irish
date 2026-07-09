@@ -169,6 +169,9 @@ export default function BatchForm({ token, batchId, onBack }: BatchFormProps) {
               <input
                 type="text"
                 required
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
                 placeholder="e.g. B-998"
                 value={batchNumber}
                 onChange={(e) => setBatchNumber(e.target.value)}
@@ -182,6 +185,9 @@ export default function BatchForm({ token, batchId, onBack }: BatchFormProps) {
               <input
                 type="text"
                 list="fabric-types-list"
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
                 placeholder="Type fabric code..."
                 value={fabricTypeName}
                 onChange={(e) => setFabricTypeName(e.target.value)}
@@ -200,6 +206,9 @@ export default function BatchForm({ token, batchId, onBack }: BatchFormProps) {
               <input
                 type="text"
                 required
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
                 placeholder="e.g. H&M"
                 value={buyer}
                 onChange={(e) => setBuyer(e.target.value)}
@@ -213,6 +222,9 @@ export default function BatchForm({ token, batchId, onBack }: BatchFormProps) {
               <input
                 type="text"
                 required
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
                 placeholder="e.g. REF-2092"
                 value={buyerReference}
                 onChange={(e) => setBuyerReference(e.target.value)}
@@ -225,6 +237,9 @@ export default function BatchForm({ token, batchId, onBack }: BatchFormProps) {
               <label className="text-xs font-semibold text-slate-500">Target Shade / Color</label>
               <input
                 type="text"
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
                 placeholder="e.g. NAVY BLUE"
                 value={color}
                 onChange={(e) => setColor(e.target.value)}
@@ -237,6 +252,9 @@ export default function BatchForm({ token, batchId, onBack }: BatchFormProps) {
               <label className="text-xs font-semibold text-slate-500">Fabric Quantity (KG)</label>
               <input
                 type="text"
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
                 placeholder="e.g. 104.5"
                 value={fabricQuantity}
                 onChange={(e) => setFabricQuantity(e.target.value)}
@@ -249,6 +267,9 @@ export default function BatchForm({ token, batchId, onBack }: BatchFormProps) {
               <label className="text-xs font-semibold text-slate-500">Trims</label>
               <input
                 type="text"
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
                 placeholder="e.g. 1x1 Collar Cuff"
                 value={trims}
                 onChange={(e) => setTrims(e.target.value)}
@@ -261,6 +282,9 @@ export default function BatchForm({ token, batchId, onBack }: BatchFormProps) {
               <label className="text-xs font-semibold text-slate-500">Trims Qty</label>
               <input
                 type="text"
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
                 placeholder="e.g. 50kg"
                 value={trimsQuantity}
                 onChange={(e) => setTrimsQuantity(e.target.value)}
@@ -273,6 +297,9 @@ export default function BatchForm({ token, batchId, onBack }: BatchFormProps) {
               <label className="text-xs font-semibold text-slate-500">Remarks & Special Process instructions</label>
               <input
                 type="text"
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
                 placeholder="e.g. Solid shade, AOP, Peach requirement..."
                 value={remarks}
                 onChange={(e) => setRemarks(e.target.value)}

@@ -390,20 +390,19 @@ export default function BatchList({ token, onEditBatch, onNavigate, onViewProduc
         
         {/* Row 1: Search & Reset */}
         <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
-          <form autoComplete="off" onSubmit={(e) => e.preventDefault()} className="relative w-full md:max-w-md group">
-            <input type="text" name="dummy" autoComplete="off" style={{display: "none"}} aria-hidden="true" />
+          <div className="relative w-full md:max-w-md group">
             <input
               type="text"
-              placeholder="Search by Batch No, Buyer, Ref..."
               autoComplete="off"
-              data-lpignore="true"
-              name="q"
+              autoCorrect="off"
+              spellCheck={false}
+              placeholder="Search by Batch No, Buyer, Ref..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-white focus:outline-none focus:border-indigo-500 text-sm transition"
             />
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5 group-focus-within:text-indigo-500" />
-          </form>
+          </div>
 
           <div className="flex gap-2 w-full md:w-auto shrink-0 justify-end">
             {hasActiveFilters && (

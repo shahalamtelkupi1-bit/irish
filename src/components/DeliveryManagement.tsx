@@ -253,16 +253,15 @@ export default function DeliveryManagement({ token, onBack, preSelectedBatchId }
       </section>
 
       {/* Search Input */}
-      <form autoComplete="off" onSubmit={(e) => e.preventDefault()} className="relative no-print">
-        <input type="text" name="dummy" autoComplete="off" style={{display: "none"}} aria-hidden="true" />
+      <div className="relative no-print">
         <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
           <Search className="h-4.5 w-4.5 text-slate-400" />
         </span>
         <input
           type="text"
           autoComplete="off"
-          data-lpignore="true"
-          name="search_input"
+          autoCorrect="off"
+          spellCheck={false}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by Batch Number, Buyer, Ref, or Color..."
@@ -276,7 +275,7 @@ export default function DeliveryManagement({ token, onBack, preSelectedBatchId }
             Clear
           </button>
         )}
-      </form>
+      </div>
 
       {/* Batches delivery list/table */}
       {loading ? (
@@ -573,6 +572,9 @@ export default function DeliveryManagement({ token, onBack, preSelectedBatchId }
                           </label>
                           <input
                             type="text"
+                            autoComplete="off"
+                            autoCorrect="off"
+                            spellCheck={false}
                             placeholder="e.g. 104.5"
                             value={state.delivery_qty}
                             onChange={(e) => updateState(batch.id, "delivery_qty", e.target.value)}
@@ -587,6 +589,9 @@ export default function DeliveryManagement({ token, onBack, preSelectedBatchId }
                           </label>
                           <input
                             type="text"
+                            autoComplete="off"
+                            autoCorrect="off"
+                            spellCheck={false}
                             placeholder="e.g. Delivered via Truck GP-1092"
                             value={state.delivery_remarks || ""}
                             onChange={(e) => updateState(batch.id, "delivery_remarks", e.target.value)}
