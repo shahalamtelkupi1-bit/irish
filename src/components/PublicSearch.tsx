@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from "react";
-import { Search, Loader2, ArrowRight, RefreshCw, Lock, Calendar, ClipboardCheck, Info, Layers, ArrowUp, Clock } from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
+import { Search, Loader2, ArrowRight, RefreshCw, Lock, Calendar, ClipboardCheck, Info, Layers, ArrowUp, Clock, AlertTriangle, X } from "lucide-react";
 import { Batch, StageKey } from "../types";
 import { getStatusDotClass, getStatusLabel, getFabricBadgeClass, formatDate, calcLossParts, getBatchBadgeText } from "../utils";
 
@@ -77,6 +77,28 @@ export default function PublicSearch({ onAdminClick }: PublicSearchProps) {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [recentBatches, setRecentBatches] = useState<Batch[]>([]);
   const [loadingRecent, setLoadingRecent] = useState(false);
+  const [showExitModal, setShowExitModal] = useState(false);
+
+  // Handle browser back/close with confirmation
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, []);
+
+  // Handle back button with custom popup
+  useEffect(() => {
+    const handlePopState = () => {
+      setShowExitModal(true);
+      // Push state again to stay on page until user confirms
+      window.history.pushState(null, "", window.location.href);
+    };
+    window.history.pushState(null, "", window.location.href);
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   // Fetch recent 10 batches on mount
   useEffect(() => {
@@ -670,6 +692,37 @@ export default function PublicSearch({ onAdminClick }: PublicSearchProps) {
         >
           <ArrowUp className="w-5 h-5 text-indigo-300 group-hover:text-indigo-200" />
         </button>
+      )}
+
+      {/* Exit Confirmation Modal */}
+      {showExitModal && (
+        <div className="fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-gradient-to-br from-slate-900 to-slate-950 border border-white/10 rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                <AlertTriangle className="w-8 h-8 text-amber-400" />
+              </div>
+              <h3 className="text-lg font-display font-bold text-white mb-2">Leave Iris Fabrics?</h3>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                Are you sure you want to close this page?
+              </p>
+            </div>
+            <div className="flex border-t border-white/10 divide-x divide-white/10">
+              <button
+                onClick={() => setShowExitModal(false)}
+                className="flex-1 py-4 text-sm font-semibold text-slate-300 hover:bg-white/5 transition cursor-pointer"
+              >
+                Stay
+              </button>
+              <button
+                onClick={() => { window.location.href = "about:blank"; }}
+                className="flex-1 py-4 text-sm font-semibold text-rose-400 hover:bg-rose-500/10 transition cursor-pointer"
+              >
+                Leave
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
