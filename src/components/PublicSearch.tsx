@@ -276,7 +276,7 @@ export default function PublicSearch({ onAdminClick }: PublicSearchProps) {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-11 pr-4 py-4 rounded-2xl glass-input placeholder-slate-500 font-sans focus:outline-none shadow-inner"
             />
-          </div>
+          </form>
 
           {/* Instant Dropdown Results */}
           {showResultsDropdown && searchResults.length > 0 && (
